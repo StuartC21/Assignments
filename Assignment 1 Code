@@ -1,95 +1,249 @@
-import java.awt.Graphics;
+import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import java.awt.Rectangle;
 
-public class Game extends JPanel {
+public class Bullet {
+	private static final int DIAMETER = 10;
+	int xA = 20;
+	int yA = 20;
+	int xB = 45;
+	int yB = 300;
+	int xC = 400;
+	int yC = 200;
+	int xD = 700;
+	int yD = 620;
+	int xE = 900;
+	int yE = 350;
+	int xa = 1;
+	int ya = 1;
+	int xb = 1;
+	int yb = 1;
+	int xc = 1;
+	int yc = 1;
+	int xd = 1;
+	int yd = 1;
+	int xe = 1;
+	int ye = 1;
 
-	private static final long serialVersionUID = 1L;
-	Player ply = new Player(this);
-	Obstacle obst = new Obstacle(this);
-	Bullet bult = new Bullet(this);
-	Floor flr = new Floor(getX(), getY(), null);
-	Key key = new Key(this);
-	Door door = new Door(this);
+	Game game;
 
-	public Game() {
-		getPlayerMovement();
-	}
-
-	private void getPlayerMovement() {
-		addKeyListener(new KeyListener() {
-
-			public void keyTyped(KeyEvent e) {
-			}
-
-			public void keyReleased(KeyEvent e) {
-				ply.keyReleased(e);
-			}
-
-			public void keyPressed(KeyEvent e) {
-				ply.keyPressed(e);
-			}
-		});
-		setFocusable(true);
-		Sound.BACK.loop();
-
+	public Bullet(Game game) {
+		this.game = game;
 	}
 
 	void move() {
-		ply.move();
-		bult.move();
+		bulletABounce();
+		bulletBBounce();
+		bulletCBounce();
+		bulletDBounce();
+		bulletEBounce();
+		bulletAMove();
+		bulletBMove();
+		bulletCMove();
+		bulletDMove();
+		bulletEMove();
+		bulletWithCollision();
+
 	}
 
-	public void paint(Graphics g) {
-		super.paint(g);
-		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		flr.paintFloor(g2d);
-		ply.paintPlayer(g2d);
-		obst.paintObstacles(g2d);
-		bult.paintBullets(g2d);
-		if (key.keyPickUp == 0) {
-			key.paintKey(g2d);
-			door.paintDoor(g2d);
+	public void bulletAMove() {
+		xA = xA + (xa * 2);
+		yA = yA + (ya * 2);
+	}
+
+	public void bulletABounce() {
+		boolean changeDirection = true;
+		if (xA + xa > 255)
+			xa = -1;
+		else if (xA + xa < 15)
+			xa = 1;
+		else if (yA + ya > 490)
+			ya = -1;
+		else if (yA + ya < 15) {
+			ya = 1;
+		} else
+			changeDirection = false;
+		if (changeDirection)
+			Sound.BALL.play();
+	}
+
+	public void bulletBMove() {
+		xB = xB + xb;
+		yB = yB + yb;
+	}
+
+	public void bulletBBounce() {
+		boolean changeDirection = true;
+		if (xB + xb > 255)
+			xb = -1;
+		else if (xB + xb < 15)
+			xb = 1;
+		else if (yB + yb > 490)
+			yb = -1;
+		else if (yB + yb < 15) {
+			yb = 1;
+		} else
+			changeDirection = false;
+		if (changeDirection)
+			Sound.BALL.play();
+
+	}
+
+	public void bulletCMove() {
+		xC = xC + xc;
+		yC = yC + yc;
+	}
+
+	public void bulletCBounce() {
+		boolean changeDirection = true;
+		if (xC + xc > 470)
+			xc = -1;
+		else if (xC + xc < 280)
+			xc = 1;
+		else if (yC + yc > 345)
+			yc = -1;
+		else if (yC + yc < 155) {
+			yc = 1;
+		} else
+			changeDirection = false;
+		if (changeDirection)
+			Sound.BALL.play();
+	}
+
+	public void bulletDMove() {
+		xD = xD + xd;
+		yD = yD + yd;
+	}
+
+	public void bulletDBounce() {
+		boolean changeDirection = true;
+		if (xD + xd > 990)
+			xd = -1;
+		else if (xD + xd < 195)
+			xd = 1;
+		else if (yD + yd > 615)
+			yd = -1;
+		else if (yD + yd < 515) {
+			yd = 1;
+		} else
+			changeDirection = false;
+		if (changeDirection)
+			Sound.BALL.play();
+	}
+
+	public void bulletEMove() {
+		xE = xE + (xe * 2);
+		yE = yE + (ye * 2);
+	}
+
+	public void bulletEBounce() {
+		boolean changeDirection = true;
+		if (xE + xe > 990)
+			xe = -1;
+		else if (xE + xe < 730)
+			xe = 1;
+		else if (yE + ye > 490)
+			ye = -1;
+		else if (yE + ye < 150) {
+			ye = 1;
+		} else
+			changeDirection = false;
+		if (changeDirection)
+			Sound.BALL.play();
+	}
+
+	public void paintBullets(Graphics2D g) {
+		g.setColor(Color.GREEN);
+		g.fillOval(xA, yA, DIAMETER, DIAMETER);
+		g.fillOval(xB, yB, DIAMETER, DIAMETER);
+		g.fillOval(xC, yC, DIAMETER, DIAMETER);
+		g.fillOval(xD, yD, DIAMETER, DIAMETER);
+		g.fillOval(xD, yD, DIAMETER, DIAMETER);
+		g.fillOval(xE, yE, DIAMETER, DIAMETER);
+		g.setColor(Color.YELLOW);
+		g.drawOval(xA, yA, DIAMETER, DIAMETER);
+		g.drawOval(xB, yB, DIAMETER, DIAMETER);
+		g.drawOval(xC, yC, DIAMETER, DIAMETER);
+		g.drawOval(xD, yD, DIAMETER, DIAMETER);
+		g.drawOval(xD, yD, DIAMETER, DIAMETER);
+		g.drawOval(xE, yE, DIAMETER, DIAMETER);
+	}
+
+	public void bulletWithCollision() {
+		bulletAwB();
+		bulletBwA();
+	}
+
+	public void bulletAwB() {
+		if (bulletAwBCollision()) {
+			bulletAxRebound();
+			bulletAyRebound();
 		}
+
 	}
 
-	public void gameOver() {
-		Sound.BACK.stop();
-		Sound.GAMEOVER.play();
-		JOptionPane.showMessageDialog(this, "YOU HAVE BEEN LOST TO THE DEPTHS OF THE VOIDIIUM MINES FOREVER!", "Game Over",
-				JOptionPane.YES_NO_OPTION);
-		System.exit(ABORT);
+	public void bulletAxRebound() {
+		if (xA + xa > xB)
+			xa = -1;
+		if (xA + xa < xB + DIAMETER)
+			xa = 1;
 	}
 
-	public void Winner() {
-		Sound.BACK.stop();
-		Sound.WINNER.play();
-		Sound.FIRECRACKER.play();
-		JOptionPane.showMessageDialog(this, "YOU CONQUERED THE VOIDIIUM MINES OF 2121 SHRAVANA 3!", "Winner",
-				JOptionPane.YES_NO_OPTION);
-		System.exit(ABORT);
+	public void bulletAyRebound() {
+		if (yA + ya > yB)
+			ya = -1;
+		if (yA + ya < yB + DIAMETER)
+			ya = 1;
 	}
 
-	public static void main(String[] args) throws InterruptedException {
-		JFrame frame = new JFrame("The Voidiium Mines of 2121 Shravana III");
-		Game game = new Game();
-		frame.add(game);
-		frame.setSize(1200, 810);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-
-		while (true) {
-			game.move();
-			game.repaint();
-			Thread.sleep(10);
+	public void bulletBwA() {
+		if (bulletBwACollision()) {
+			bulletBxRebound();
+			bulletByRebound();
 		}
+
 	}
+
+	public void bulletBxRebound() {
+		if (xB + xb > xA)
+			xb = -1;
+		if (xB + xb < xA + DIAMETER)
+			xb = 1;
+	}
+
+	public void bulletByRebound() {
+		if (yB + yb > yA)
+			yb = -1;
+		if (yB + yb < yA + DIAMETER)
+			yb = 1;
+	}
+
+	private boolean bulletAwBCollision() {
+		return getBoundsA().intersects(getBoundsB());
+	}
+
+	private boolean bulletBwACollision() {
+		return getBoundsB().intersects(getBoundsA());
+	}
+
+	public Rectangle getBoundsA() {
+		return new Rectangle(xA, yA, DIAMETER, DIAMETER);
+	}
+
+	public Rectangle getBoundsB() {
+		return new Rectangle(xB, yB, DIAMETER, DIAMETER);
+	}
+
+	public Rectangle getBoundsC() {
+		return new Rectangle(xC, yC, DIAMETER, DIAMETER);
+	}
+
+	public Rectangle getBoundsD() {
+		return new Rectangle(xD, yD, DIAMETER, DIAMETER);
+	}
+
+	public Rectangle getBoundsE() {
+		return new Rectangle(xE, yE, DIAMETER, DIAMETER);
+	}
+
 }
