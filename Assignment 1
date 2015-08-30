@@ -1,124 +1,95 @@
-import java.util.Scanner;
-public class Salarydemo {
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-	public static void main(String[] args) {
-		Employee[]staff= new Employee[3];
-		staff[0] = new HourlyEmployee("Morgan, Harry", 30);
-		staff[1] = new SalariedEmployee("Lin, Sally", 52000);
-		staff[2] = new Manager("Smith, Mary", 104000, 50);
-		
-		Scanner in = new Scanner(System.in);
-		final int TEST_CASES = 3;
-		for(int i = 0; i < TEST_CASES; i++){
-			for (Employee e: staff){
-				System.out.println("Hours worked by " + e.getName() + ": ");
-				int hours=in.nextInt();
-				System.out.println("Salary: " + e.weeklyPay(hours));	
-				i++;
+public class Game extends JPanel {
+
+	private static final long serialVersionUID = 1L;
+	Player ply = new Player(this);
+	Obstacle obst = new Obstacle(this);
+	Bullet bult = new Bullet(this);
+	Floor flr = new Floor(getX(), getY(), null);
+	Key key = new Key(this);
+	Door door = new Door(this);
+
+	public Game() {
+		getPlayerMovement();
+	}
+
+	private void getPlayerMovement() {
+		addKeyListener(new KeyListener() {
+
+			public void keyTyped(KeyEvent e) {
 			}
+
+			public void keyReleased(KeyEvent e) {
+				ply.keyReleased(e);
+			}
+
+			public void keyPressed(KeyEvent e) {
+				ply.keyPressed(e);
+			}
+		});
+		setFocusable(true);
+		Sound.BACK.loop();
+
+	}
+
+	void move() {
+		ply.move();
+		bult.move();
+	}
+
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		flr.paintFloor(g2d);
+		ply.paintPlayer(g2d);
+		obst.paintObstacles(g2d);
+		bult.paintBullets(g2d);
+		if (key.keyPickUp == 0) {
+			key.paintKey(g2d);
+			door.paintDoor(g2d);
 		}
-		in.close();
+	}
+
+	public void gameOver() {
+		Sound.BACK.stop();
+		Sound.GAMEOVER.play();
+		JOptionPane.showMessageDialog(this, "YOU HAVE BEEN LOST TO THE DEPTHS OF THE VOIDIIUM MINES FOREVER!", "Game Over",
+				JOptionPane.YES_NO_OPTION);
+		System.exit(ABORT);
+	}
+
+	public void Winner() {
+		Sound.BACK.stop();
+		Sound.WINNER.play();
+		Sound.FIRECRACKER.play();
+		JOptionPane.showMessageDialog(this, "YOU CONQUERED THE VOIDIIUM MINES OF 2121 SHRAVANA 3!", "Winner",
+				JOptionPane.YES_NO_OPTION);
+		System.exit(ABORT);
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		JFrame frame = new JFrame("The Voidiium Mines of 2121 Shravana III");
+		Game game = new Game();
+		frame.add(game);
+		frame.setSize(1200, 810);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+
+		while (true) {
+			game.move();
+			game.repaint();
+			Thread.sleep(10);
+		}
 	}
 }
-
-
-
-
-
-
-
-public class HourlyEmployee extends Employee {
-	
-	public double hourlyWage;
-
-			
-	public HourlyEmployee(String name, double wage){
-		super(name);
-		hourlyWage = wage;
-	}
-	
-	public double weeklyPay(int hoursWorked){
-		double pay = hoursWorked * hourlyWage;
-		if(hoursWorked>40){
-			pay = 40 * hourlyWage+((hoursWorked-40)*(hourlyWage*1.5));
-		}
-		return pay;
-	}
-	
-
-		
-		}
-	
-
-
-
-
-
-
-public class Manager extends SalariedEmployee {
-	public double weeklyBonus;
-	
-	public Manager (String name, double salary, double bonus){
-		super(name,salary);
-		weeklyBonus = bonus;
-	}
-	public double weeklyPay(int hours){
-		return super.weeklyPay(hours) + weeklyBonus;	
-	}
-	
-	}
-
-
-
-
-public class SalariedEmployee extends Employee {
-	public double annualSalary; 
-	
-	
-	public double weeklyPay(int hoursWorked){
-		final int WEEKS_PER_YEAR=52;
-		return annualSalary / WEEKS_PER_YEAR; 
-	}
-	
-	
-	public SalariedEmployee(String name, double salary){
-		
-		super(name);
-		annualSalary=salary;
-		
-	}
-	
-}
-
-
-
-
-
-/**
- * 
- */
-
-/**
- * @author Stuart Carney
- *
- */
-public class Employee {
-	public String name;
-	public Employee(String name){
-		this.name=name;
-	}
-	public void setName(String employee){
-		this.name=employee;
-	}
-	
-	public String getName() {
-		return name;
-	}
-		
-	public double weeklyPay(int hoursWorked){
-		
-		return 0;
-		
-	}
-	}
-
